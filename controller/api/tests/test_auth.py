@@ -60,6 +60,11 @@ class AuthTest(TestCase):
         submit['username'] = 'new'
         response = self.client.post(url, json.dumps(submit), content_type='application/json')
         self.assertEqual(response.status_code, 400)
+        # test disabled registration
+        with self.settings(REGISTRATION_ENABLED=False):
+            submit['username'] = 'anothernewuser'
+            response = self.client.post(url, json.dumps(submit), content_type='application/json')
+            self.assertEqual(response.status_code, 403)
         # test for default objects
         url = '/api/providers'
         response = self.client.get(url)
